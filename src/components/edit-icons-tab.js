@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Tab } from '@headlessui/react';
 
@@ -25,7 +25,7 @@ const EditIconsTab = ({ insertLatex, addImageToExport }) => {
 
   const t = useTranslation('tabs');
 
-  const handleImageConfirm = (file, altText) => {
+  const handleImageConfirm = useCallback((file, altText) => {
     const fileID = generateUniqueId();
     insertLatex({
       latex: `![${altText}](${fileID})`,
@@ -33,7 +33,7 @@ const EditIconsTab = ({ insertLatex, addImageToExport }) => {
     });
     
     addImageToExport(fileID, file);
-  };
+  }, [insertLatex, addImageToExport]);
 
   return (
     <div>
@@ -127,9 +127,9 @@ const EditIconsTab = ({ insertLatex, addImageToExport }) => {
                   onClick={() => {
                     if (tab.id === 'insert_image') {
                       setIsImageModalOpen(true);
-                    } else {
-                      insertLatex(tab);
+                      return;
                     }
+                    insertLatex(tab);
                   }}
                 >
                   <tab.Icon width={50} height={50} />
